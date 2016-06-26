@@ -54,16 +54,20 @@ function check-execs()
 {
     formula=$1;
     execdir=$2;
+    if [ ! -d $execdir ]
+    then
+	return 0;
+    fi
     executables=( `dir $execdir` );
     for executable in $executables
     do
         link-available $executable $formula $execdir;
         if [ $? -ne 0 ]
         then
-            echo "$formula is missing a dependency!";
             return 1;
         fi
     done
+    return 0;
 }
 
 brew=`which brew`;
@@ -82,7 +86,7 @@ for formulafile in `dir $tapdir`
 do
     formula=`basename $formulafile .rb`;
     echo "Checking $formula!";
-    $brew install $formula > /dev/null;
+    $brew install $formula 1> /dev/null 2>&1;
     if [ $? -ne 0 ]
     then
         echo "Installing $formula failed! Skipping."
