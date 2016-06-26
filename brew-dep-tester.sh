@@ -15,7 +15,7 @@ function lib-available()
             return 0;
         fi
     done
-    for dep in $deps
+    for dep in $deps $formula
     do
         shortdep=`basename $dep`;
         
@@ -31,7 +31,12 @@ function link-available()
 {
     executable=$1;
     formula=$2;
-    linked=( `patchelf --print-needed $execdir/$executable` );
+    linked=( `patchelf --print-needed $execdir/$executable 2> /dev/null` );
+
+    if [ $? -ne 0 ]
+    then
+        return 0;
+    fi
     
     for link in $linked
     do
@@ -76,7 +81,8 @@ fi
 for formulafile in `dir $tapdir`
 do
     formula=`basename $formulafile .rb`;
-    $brew install -v $formula;
+    echo "Checking $formula!";
+    $brew install $formula > /dev/null;
     if [ $? -ne 0 ]
     then
         echo "Installing $formula failed! Skipping."
