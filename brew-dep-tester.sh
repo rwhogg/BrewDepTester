@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # Hardcoded list of exceptions (libraries provided by glibc or an explicit system dependency)
 exceptions=( "ld-linux-x86-64.so.2" "libc.so.6" "libm.so.6" );
