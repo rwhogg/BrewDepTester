@@ -1,4 +1,4 @@
-#!/bin/zsh -x
+#!/bin/zsh
 
 # Hardcoded list of exceptions (libraries provided by glibc or an explicit system dependency)
 exceptions=( "ld-linux-x86-64.so.2" "libc.so.6" "libm.so.6" );
@@ -52,12 +52,10 @@ function check-execs()
     executables=( `dir $execdir` );
     for executable in $executables
     do
-        read
         link-available $executable $formula $execdir;
         if [ $? -ne 0 ]
         then
             echo "$formula is missing a dependency!";
-            read;
             return 1;
         fi
     done
