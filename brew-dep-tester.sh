@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 # Hardcoded list of exceptions (libraries provided by glibc or an explicit system dependency)
-exceptions=( "ld-linux-x86-64.so.2" "libc.so.6" "libm.so.6" "libutil.so.1" "libpthread.so.0" "libstdc++.so.6" );
+exceptions=( "ld-linux-x86-64.so.2" "libc.so.6" "libm.so.6" "libutil.so.1" "libpthread.so.0" "libstdc++.so.6" "librt.so.1" "libdl.so.2" );
 
 function lib-available()
 {
