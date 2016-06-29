@@ -21,9 +21,7 @@ function lib-available()
     formula=$1;
     lib=$2;
     prefix=$3;
-    echo "checking lib $lib";
     deps=( `$brew deps $formula` );
-    echo "deps are $deps"
     for exception in $exceptions
     do
         if [ "x$exception" = "x$link" ]
@@ -33,16 +31,15 @@ function lib-available()
     done
     for dep in $deps $formula
     do
-	echo $dep
 	shortdep=`basename $dep`;
-	echo "Checking dep $shortdep"
         deplibdir=$prefix/opt/$shortdep/lib;
+	if [ ! -d $deplibdir ]
+	then
+	    continue;
+	fi
 	deplibs=( `dir $deplibdir` );
-	echo $deplibs
 	for deplib in $deplibs
 	do
-	    echo "Checking deplib $deplib"
-	    read
 	    if [ "x$deplib" = "x$lib" ]
 	    then
 		return 0;
