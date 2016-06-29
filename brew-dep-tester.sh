@@ -7,6 +7,7 @@ function lib-available()
 {
     formula=$1;
     lib=$2;
+    prefix=$3;
     deps=( `$brew deps $formula` );
     for exception in $exceptions
     do
@@ -17,12 +18,15 @@ function lib-available()
     done
     for dep in $deps $formula
     do
-        shortdep=`basename $dep`;
-        
-        # Temporary crude test - see if the binary links to a library named "*$dep*"
-        case $lib in
-            *$shortdep*) return 0
-        esac
+        libdir=$prefix/opt/$formula/lib;
+	deplibs=( `dir $libdir` );
+	for deplib in $deplibs
+	do
+	    if [ "x$deplib" = "x$lib" ]
+	    then
+		return 0;
+	    fi
+	done
     done
     return 1;
 }
@@ -31,6 +35,7 @@ function link-available()
 {
     executable=$1;
     formula=$2;
+    prefix=$3;
     linked=( `patchelf --print-needed $execdir/$executable 2> /dev/null` );
 
     if [ $? -ne 0 ]
@@ -40,7 +45,7 @@ function link-available()
     
     for link in $linked
     do
-        lib-available $formula $link;
+        lib-available $formula $link $prefix;
         if [ $? -ne 0 ]
         then
             echo "No link available for $link in $formula!";
@@ -53,7 +58,8 @@ function link-available()
 function check-execs()
 {
     formula=$1;
-    execdir=$2;
+    prefix=$2;
+    execdir="$prefix/opt/$formula/bin";
     if [ ! -d $execdir ]
     then
 	return 0;
@@ -61,7 +67,7 @@ function check-execs()
     executables=( `dir $execdir` );
     for executable in $executables
     do
-        link-available $executable $formula $execdir;
+        link-available $executable $formula $prefix;
         if [ $? -ne 0 ]
         then
             return 1;
@@ -92,6 +98,6 @@ do
         echo "Installing $formula failed! Skipping."
         continue;
     fi
-    execdir="$prefix/opt/$formula/bin";
-    check-execs "$formula" "$execdir"
+
+    check-execs "$formula" "$prefix"
 done
