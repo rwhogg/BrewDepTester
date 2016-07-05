@@ -99,7 +99,7 @@ function check-execs()
 }
 
 # Entrypoint
-for formulafile in `dir $tapdir`
+for formulafile in `ls -x $tapdir`
 do
     formula=`basename $formulafile .rb`;
     echo "Checking $formula!";
