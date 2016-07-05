@@ -63,6 +63,10 @@ function link-available()
     
     for link in $linked
     do
+        if [ "x$link" = "xlibstdc++.so.6" ]
+        then
+            echo "$formula requires C++";
+        fi
         lib-available $formula $link $prefix;
         if [ $? -ne 0 ]
         then
